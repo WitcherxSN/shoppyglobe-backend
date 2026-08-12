@@ -84,6 +84,55 @@ app.post("/cart", async (req, res) => {
   }
 });
 
+app.put("/cart/:id", async (req, res) => {
+  try {
+    const { quantity } = req.body;
+
+    const cartItem = await Cart.findById(req.params.id);
+
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item not found"
+      });
+    }
+
+    cartItem.quantity = quantity;
+
+    await cartItem.save();
+
+    res.status(200).json({
+      message: "Cart updated successfully",
+      cartItem: cartItem
+    });
+
+  } catch (error) {
+    res.status(400).json({
+      message: "Invalid data"
+    });
+  }
+});
+
+app.delete("/cart/:id", async (req, res) => {
+  try {
+    const cartItem = await Cart.findByIdAndDelete(req.params.id);
+
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item not found"
+      });
+    }
+
+    res.status(200).json({
+      message: "Cart item deleted successfully"
+    });
+
+  } catch (error) {
+    res.status(400).json({
+      message: "Invalid cart item ID"
+    });
+  }
+});
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
