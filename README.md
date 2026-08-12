@@ -3,6 +3,7 @@
 Backend API for the ShoppyGlobe e-commerce application built using Node.js, Express.js, MongoDB, and JWT authentication.
 
 # Github Link
+https://github.com/WitcherxSN/shoppyglobe-backend.git
 
 
 ## Features
