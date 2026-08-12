@@ -1,3 +1,4 @@
+const Cart = require("./models/Cart");
 const Product = require("./models/Product");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -48,6 +49,37 @@ app.get("/products/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: "Invalid product ID"
+    });
+  }
+});
+
+app.post("/cart", async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+
+    const cartItem = new Cart({
+      productId: productId,
+      quantity: quantity
+    });
+
+    await cartItem.save();
+
+    res.status(201).json({
+      message: "Product added to cart",
+      cartItem: cartItem
+    });
+
+  } catch (error) {
+    res.status(400).json({
+      message: "Invalid data"
     });
   }
 });
