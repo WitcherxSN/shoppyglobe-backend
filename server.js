@@ -3,6 +3,7 @@ const Product = require("./models/Product");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("./middleware/auth");
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -56,9 +57,17 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-app.post("/cart", async (req, res) => {
+app.post("/cart", authMiddleware, async (req, res) => {
   try {
+
     const { productId, quantity } = req.body;
+
+if (!productId || !quantity) {
+  return res.status(400).json({
+    message: "Product ID and quantity are required"
+  });
+}
+    
 
     const product = await Product.findById(productId);
 
@@ -87,7 +96,7 @@ app.post("/cart", async (req, res) => {
   }
 });
 
-app.put("/cart/:id", async (req, res) => {
+app.put("/cart/:id", authMiddleware, async (req, res) => {
   try {
     const { quantity } = req.body;
 
@@ -115,7 +124,7 @@ app.put("/cart/:id", async (req, res) => {
   }
 });
 
-app.delete("/cart/:id", async (req, res) => {
+app.delete("/cart/:id", authMiddleware, async (req, res) => {
   try {
     const cartItem = await Cart.findByIdAndDelete(req.params.id);
 
