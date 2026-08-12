@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
   res.send("ShoppyGlobe API is running");
 });
 
+// Connect application to MongoDB Atlas
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -25,6 +26,7 @@ mongoose
     console.log("MongoDB connection error:", error);
   });
 
+  // Fetch all products from MongoDB
   app.get("/products", async (req, res) => {
   try {
     const products = await Product.find();
@@ -37,6 +39,7 @@ mongoose
   }
 });
 
+// Fetch a single product using MongoDB ID
 app.get("/products/:id", async (req, res) => {
   try {
 
@@ -57,6 +60,7 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
+// Add product to cart (protected route)
 app.post("/cart", authMiddleware, async (req, res) => {
   try {
 
@@ -96,6 +100,7 @@ if (!productId || !quantity) {
   }
 });
 
+// Update cart item quantity (protected route)
 app.put("/cart/:id", authMiddleware, async (req, res) => {
   try {
     const { quantity } = req.body;
@@ -124,6 +129,7 @@ app.put("/cart/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Delete item from cart (protected route)
 app.delete("/cart/:id", authMiddleware, async (req, res) => {
   try {
     const cartItem = await Cart.findByIdAndDelete(req.params.id);
@@ -145,6 +151,7 @@ app.delete("/cart/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// Register a new user and store hashed password
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -188,6 +195,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Login user and generate JWT token
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
